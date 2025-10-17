@@ -9,6 +9,6 @@ serpapi
 google-search-results
 python-multipart
 pillow
-git+https://github.com/ultralytics/yolov5.git
+ultralytics==8.2.0
 requests
 
