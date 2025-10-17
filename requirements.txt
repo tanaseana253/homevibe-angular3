@@ -9,6 +9,6 @@ serpapi
 google-search-results
 python-multipart
 pillow
-ultralytics==8.2.0
+ultralytics==8.2.0 --no-deps
 requests
 
