@@ -1,28 +1,15 @@
-# Ignore version control and cache files
 .git
 .gitignore
 __pycache__/
 *.pyc
-
-# Ignore local environments and configs
-.env
+*.pt
+*.onnx
+*.weights
+*.log
+*.tmp
 venv/
 .venv/
-
-# Ignore frontend build leftovers (only if you already built Angular dist/)
 node_modules/
-angular/
 src/
 *.ts
 *.js.map
-
-# Ignore large model or training files
-*.pt
-*.weights
-*.onnx
-*.pth
-
-# Ignore temporary files
-*.log
-*.tmp
-*.bak
