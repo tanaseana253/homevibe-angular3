@@ -1,14 +1,15 @@
+# Core dependencies
 numpy
-torch==2.2.0+cpu
-torchvision==0.17.0+cpu
---extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.1.0+cpu
+torchvision==0.16.0+cpu
 fastapi
 uvicorn
 python-dotenv
-serpapi
-google-search-results
 python-multipart
 pillow
-ultralytics==8.2.0 --no-deps
 requests
+opencv-python
+serpapi
+google-search-results
 
+--extra-index-url https://download.pytorch.org/whl/cpu
