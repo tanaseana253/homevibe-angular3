@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+venv/
+.git/
+.history/
+node_modules/
+dist/
+*.log

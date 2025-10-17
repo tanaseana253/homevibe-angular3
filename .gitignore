@@ -1,0 +1,58 @@
+# === Python / Backend ===
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+*.log
+*.pt
+.venv/
+
+# YOLO weights
+*.pt
+*.onnx
+*.pth
+
+# === Angular / Frontend ===
+image-search-frontend/node_modules/
+image-search-frontend/dist/
+.angular/
+.history/
+node_modules/
+dist/
+build/
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.history/*
+
+# === Cache / Build / Test ===
+/.angular/cache
+/tmp
+/out-tsc
+/bazel-out
+.sass-cache/
+coverage/
+connect.lock
+libpeerconnection.log
+testem.log
+typings/
+
+# === Misc ===
+.DS_Store
+Thumbs.db
+
+# Node / Angular
+node_modules/
+image-search-frontend/node_modules/
+venv/
+image-search-backend/venv/
+*.pt
