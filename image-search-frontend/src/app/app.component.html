@@ -1,0 +1,129 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Hero Section -->
+  <div class="relative w-full mx-auto overflow-hidden h-screen">
+
+    <!-- 🔹 Top bar with HomeVibe -->
+    <div class="absolute top-0 left-0 w-full bg-white shadow-lg z-20 h-12 flex items-center">
+      <div class="max-w-7xl mx-10 w-full flex items-center">
+        <button 
+          (click)="resetApp()" 
+          class="text-xl font-bold text-black hover:text-gray-700 transition-colors mt-0"
+        >
+          HomeVibe
+        </button>
+      </div>
+    </div>
+
+    <!-- Hero Container -->
+    <div class="relative w-full h-[90vh] flex items-center justify-center overflow-hidden" >
+      <!-- 🔹 Blurred background image -->
+      <div
+        class="absolute inset-0 bg-center bg-cover"
+        [style.background-image]="'url(' + (preview || 'assets/images/hero_image.jpg') + ')'"
+      ></div>
+      <div class="absolute inset-0 backdrop-blur-md bg-white/40"  style="background-image: linear-gradient(to bottom,rgba(255,0,0,0), rgba(255,0,0,0), rgba(249,250,251,1))"></div>
+
+      <!-- 🔹 Foreground content wrapper -->
+      <div class="relative z-10 w-full h-full flex items-center justify-center gap-x-16 px-12 pt-20">
+
+        <div class="max-w-6xl mx-auto flex items-center" style="width: 100%; max-width: 1104px; margin-bottom: 100px;"> 
+          <!-- Left side -->
+          <div class="text-black" style="width: 100%;">
+            <h1 class="font-roboto font-[300] text-[64px] leading-[80px] tracking-[-1.5px] text-black/90">
+              Bring your inspiration <br>to life
+            </h1>
+            <p class="font-roboto font-light text-[32px] leading-[47px] tracking-[-1.5px] text-black/90">
+              Upload an image and get <br> locally sourced products
+            </p>
+
+            <!-- File Upload -->
+            <div class="mt-6">
+              <input
+                type="file"
+                #fileInput
+                hidden
+                (change)="onFileChange($event)"
+              />
+              <button
+                type="button"
+                class="h-[42px] bg-black text-white rounded-[8px] px-[22px] py-[8px] hover:bg-gray-800 inline-flex items-center justify-center whitespace-nowrap"
+                (click)="fileInput.click()"
+              >
+                {{ loading ? "Detecting..." : "Upload Image" }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Right-side square card -->
+          <div class="relative w-96 aspect-square bg-white rounded-lg shadow-lg overflow-hidden">
+            <img
+              id="uploadedImg" 
+              [src]="preview || 'assets/images/hero_image.jpg'" 
+              alt="Displayed Image"
+              class="object-cover w-full h-full"
+              #uploadedImg
+              (load)="preview && onImageLoad(uploadedImg)"
+            >
+            <!-- Hotspot markers -->
+            <ng-container *ngIf="preview">
+              <div *ngFor="let d of detections"
+                  class="absolute flex items-center justify-center"
+                  [style.left.px]="getMarkerX(d) - 6"
+                  [style.top.px]="getMarkerY(d) - 6">
+                <div class="w-3 h-3 rounded-full border-2 border-white flex items-center justify-center bg-transparent">
+                  <div class="w-1 h-1 rounded-full bg-white"></div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div> <!-- ✅ closes Hero Section -->
+
+  <!-- Results Section -->
+  <div class="max-w-6xl mx-auto -mt-36 space-y-10 px-6 relative z-20">
+    <div *ngFor="let d of detections" class="bg-white shadow-lg rounded-lg p-6">
+
+      <!-- Detected object row -->
+      <div class="flex items-center gap-6 mb-6">
+        <div class="w-10 h-10 overflow-hidden rounded-lg shadow-md">
+          <img [src]="d.crop_url" alt="{{ d.class_name }}" class="object-cover w-full h-full">
+        </div>
+        <div>
+          <h2 class="text-xl font-semibold">{{ d.class_name | titlecase }}</h2>
+          <p class="text-gray-700 font-medium">
+            Confidence: {{ (d.confidence * 100) | number:'1.0-0' }}%
+          </p>
+        </div>
+      </div>
+
+      <!-- Similar Images -->
+      <div *ngIf="matches[d.id]?.length" class="mt-6">
+
+        <!-- ✅ Strict 3-column grid -->
+        <div class="grid grid-cols-3 gap-6" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;">
+          <div *ngFor="let m of matches[d.id] | slice:0:3" 
+              class="bg-white rounded-lg shadow hover:shadow-xl transition-shadow">
+            <a [href]="m.url" target="_blank" class="flex flex-col h-full">
+              <!-- Thumbnail -->
+              <img [src]="m.image" alt="{{ m.title }}" 
+                  class="w-full h-40 object-cover rounded-t-lg">
+              
+              <!-- Info -->
+              <div class="p-4 flex flex-col flex-grow">
+                <p class="font-medium text-gray-900 truncate">{{ m.title }}</p>
+                <p class="text-sm text-blue-600 truncate">{{ m.url }}</p>
+                <p class="text-gray-700 mt-1 text-sm font-medium">{{ m.price }} USD</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>  <!-- ✅ closes Similar Images -->
+
+    </div>
+  </div>
+
+</div> <!-- ✅ closes min-h-screen -->

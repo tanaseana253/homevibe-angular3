@@ -1,0 +1,101 @@
+/* Wrap container */
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: 20px auto;
+  max-width: 1000px;
+}
+
+/* Uploaded image */
+.uploaded-container {
+  margin: 20px 0;
+  position: relative;
+}
+
+.uploaded-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* preserves aspect ratio */
+  display: block;
+}
+
+
+/* Hotspot markers overlay */
+.image-wrapper {
+  position: relative;
+  width: 500px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hotspot marker */
+.marker {
+  position: absolute;
+  width: 18px;   /* smaller outer ring */
+  height: 18px;
+  border: 1px solid white;   /* outer ring */
+  border-radius: 50%;
+  background-color: transparent;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* inner white dot */
+.marker::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;   /* inner dot */
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Hover effect */
+.marker:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+/* Detected objects in a single horizontal line */
+.detections-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+  overflow-x: auto; /* scroll if too many detections */
+  padding: 10px 0;
+  width: 100%;
+}
+
+/* Card for detected objects */
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fafafa;
+  text-align: center;
+  min-width: 180px;
+  flex-shrink: 0; /* prevents cards from shrinking */
+}
+
+.card img {
+  max-width: 150px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+/* Grid for similar images inside each detection */
+.similar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
