@@ -7,6 +7,12 @@ RUN npm run build -- --configuration production
 
 # STEP 2: Build FastAPI
 FROM python:3.10-slim
+
+RUN apt-get update && \
+    apt-get install -y libgl1 libglib2.0-0 && \
+    rm -rf /var/lib/apt/lists/*
+
+
 WORKDIR /app
 
 # Install system deps
