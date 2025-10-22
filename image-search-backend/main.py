@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from serpapi import GoogleSearch
 from ultralytics import YOLO
 from PIL import Image
@@ -210,3 +211,10 @@ def serve_frontend():
         return FileResponse(index_path)
     return {"message": "Frontend not found. Did you build Angular?"}
 
+
+dist_path = os.path.join(os.path.dirname(__file__), "static")
+app.mount("/", StaticFiles(directory=dist_path, html=True), name="static")
+
+@app.get("/")
+def serve_frontend():
+    return FileResponse(os.path.join(dist_path, "index.html"))
