@@ -1,0 +1,11 @@
+services:
+  - name: image-ai-app
+    type: web
+    env: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: SERPAPI_KEY
+        sync: false
+      - key: IMGBB_API_KEY
+        sync: false

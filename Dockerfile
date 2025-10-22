@@ -1,44 +1,43 @@
-##########################################
-# 1️⃣ Frontend build stage
-##########################################
-FROM node:18-slim AS frontend-build
+##### STEP 1: Build Angular (frontend) #####
+FROM node:20-alpine AS frontend
 WORKDIR /frontend
+
+# install deps
 COPY image-search-frontend/package*.json ./
-RUN npm ci && npm install -g @angular/cli
+RUN npm ci
+
+# copy app and build
 COPY image-search-frontend/ ./
-RUN ng build --configuration production
-# Keep only built files
-RUN rm -rf node_modules src /usr/local/lib/node_modules /root/.npm /tmp/*
+RUN npm run build -- --configuration production
+# output: /frontend/dist/image-search-frontend
 
 
-##########################################
-# 2️⃣ Backend runtime stage
-##########################################
+##### STEP 2: Build Python (backend) #####
 FROM python:3.10-slim AS backend
-WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-# System libs for OpenCV/YOLO
+# system libs needed by opencv etc.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1 libglib2.0-0 && \
+    libgl1 libglib2.0-0  && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Python deps
-COPY image-search-backend/requirements.txt .
-# ✅ Use smaller torch build
-RUN pip install --no-cache-dir torch==2.2.0+cpu torchvision==0.17.0+cpu \
-    -f https://download.pytorch.org/whl/torch_stable.html && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip cache purge
+WORKDIR /app
 
-# Copy backend code
-COPY image-search-backend/ ./image-search-backend/
+# install python deps first (leverages Docker cache)
+COPY image-search-backend/requirements.txt /app/image-search-backend/requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r /app/image-search-backend/requirements.txt
 
-# Copy static built frontend
-COPY --from=frontend-build /frontend/dist/image-search-frontend/ ./image-search-backend/static/
+# copy backend code
+COPY image-search-backend/ /app/image-search-backend/
 
-# Final cleanup
-RUN rm -rf /root/.cache /tmp/*
+# copy built Angular into FastAPI static/
+COPY --from=frontend /frontend/dist/image-search-frontend/ /app/image-search-backend/static/
 
-ENV PORT=8000
+# (optional) ship YOLO weights if you want to avoid downloading on boot
+# COPY yolov8s.pt /app/image-search-backend/yolov8s.pt
+
+# Render provides $PORT; default to 8000 for local runs
 EXPOSE 8000
-CMD ["uvicorn", "image-search-backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn image-search-backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
