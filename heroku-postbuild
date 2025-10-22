@@ -1,3 +1,0 @@
-#!/bin/bash
-echo "Installing ultralytics without extras..."
-pip install ultralytics==8.2.0
