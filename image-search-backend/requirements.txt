@@ -1,22 +1,14 @@
-# Pin NumPy < 2 to avoid the Torch/NumPy warning
-numpy<2.0
-ultralytics==8.2.0
-
-# PyTorch CPU wheels (works on Render)
+numpy<2
 torch==2.2.0+cpu
 torchvision==0.17.0+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
 
+ultralytics==8.3.0
+opencv-python
 fastapi
 uvicorn[standard]
+python-dotenv
 python-multipart
 pillow
-requests
-opencv-python-headless
-python-dotenv
-
-# SerpApi official client (your code uses GoogleSearch)
 google-search-results
 serpapi
-
-# (keep this line at the very end)
---extra-index-url https://download.pytorch.org/whl/cpu
