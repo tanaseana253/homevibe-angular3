@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  private apiURL = 'https://homevibe-angular3.onrender.com';
   title = 'image-search-frontend';
   file: File | null = null;
   preview: string | ArrayBuffer | null = null;
@@ -104,7 +105,7 @@ export class AppComponent {
     const formData = new FormData();
     formData.append('file', this.file);
 
-    this.http.post<any>('http://127.0.0.1:8000/detect', formData).subscribe({
+    this.http.post<any>(`${this.apiURL}/detect`, formData).subscribe({
       next: (res) => {
         // ✅ Save requestId globally
         this.requestId = res.request_id;
@@ -138,7 +139,7 @@ export class AppComponent {
 }
 
   searchCrop(requestId: string, id: number) {
-    this.http.get<any>(`http://127.0.0.1:8000/search_similar_crop/${requestId}/${id}`).subscribe({
+    this.http.get<any>(`${this.apiURL}/search_similar_crop/${requestId}/${id}`).subscribe({
       next: (res) => {
         if (res.error) {
           console.warn("Crop not found:", id);
