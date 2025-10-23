@@ -15,15 +15,19 @@ print("DEBUG SERPAPI_KEY:", os.getenv("SERPAPI_KEY"))
 SERPAPI_KEY = os.getenv("SERPAPI_KEY")
 IMGBB_KEY = os.getenv("IMGBB_KEY")
 
+# Detect if running on Render (REMOTE) or Local
+BACKEND_URL = os.getenv("RENDER_EXTERNAL_URL", "http://127.0.0.1:8000")
+
 app = FastAPI(title="Object Detection + Similar Search")
 
 # Allow frontend calls
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        BACKEND_URL,
+        "https://homevibe-angular3.onrender.com",
         "http://localhost:4200", 
         "http://127.0.0.1:4200",
-        "https://homevibe-angular3.onrender.com"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -150,7 +154,7 @@ async def detect(file: UploadFile = File(...)):
             "id": i,
             "class_name": det["class_name"],
             "confidence": det["confidence"],
-            "crop_url": f"http://127.0.0.1:8000/cropped_images/{request_id}/{crop_filename}",
+            "crop_url": f"{BACKEND_URL}/cropped_images/{request_id}/{crop_filename}",
             "x": center_x,
             "y": center_y
         })
@@ -200,22 +204,15 @@ async def search_similar_crop(request_id: str, crop_id: int):
 
 
 # ✅ Serve Angular frontend (for Heroku deployment)
+
 from fastapi.responses import FileResponse
 
-# Serve static Angular files (built version)
-app.mount("/static", StaticFiles(directory="image-search-backend/static"), name="static")
-
-@app.get("/")
-def serve_frontend():
-    index_path = os.path.join("image-search-backend/static/index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
-    return {"message": "Frontend not found. Did you build Angular?"}
-
-
 dist_path = os.path.join(os.path.dirname(__file__), "static")
+
+# Serve all Angular files
 app.mount("/", StaticFiles(directory=dist_path, html=True), name="static")
 
+# Serve index.html as fallback
 @app.get("/")
 def serve_frontend():
     return FileResponse(os.path.join(dist_path, "index.html"))
