@@ -9,30 +9,24 @@ RUN npm run build -- --configuration production
 FROM python:3.10-slim
 
 RUN apt-get update && \
-    apt-get install -y libgl1 libglib2.0-0 && \
+    apt-get install -y libgl1 libglib2.0-0 curl && \
     rm -rf /var/lib/apt/lists/*
 
-
 WORKDIR /app
-
-# Install system deps
-RUN apt-get update && apt-get install -y build-essential
 
 # Install Python deps
 COPY image-search-backend/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # ✅ Pre-download YOLO weights
-RUN apt-get update && apt-get install -y curl && \
-    mkdir -p /root/.cache/torch/hub/checkpoints && \
+RUN mkdir -p /root/.cache/torch/hub/checkpoints && \
     curl -L https://github.com/ultralytics/assets/releases/download/v8.3.0/yolov8n.pt \
-    -o /root/.cache/torch/hub/checkpoints/yolov8n.pt && \
-    apt-get remove -y curl && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+    -o /root/.cache/torch/hub/checkpoints/yolov8n.pt
 
-# Copy backend code
+# ✅ Copy backend
 COPY image-search-backend/ /app/image-search-backend/
 
-# Copy Angular build into static folder
+# ✅ Copy Angular build to FastAPI /static
 COPY --from=frontend-build /frontend/dist/image-search-frontend/ /app/image-search-backend/static/
 
 # Expose port
