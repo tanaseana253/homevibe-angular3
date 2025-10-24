@@ -105,7 +105,7 @@ export class AppComponent {
     const formData = new FormData();
     formData.append('file', this.file);
 
-    this.http.post<any>(`${this.apiURL}/detect`, formData).subscribe({
+    this.http.post<any>(`${this.apiURL}/api/detect`, formData).subscribe({
       next: (res) => {
         // ✅ Save requestId globally
         this.requestId = res.request_id;
@@ -139,7 +139,7 @@ export class AppComponent {
 }
 
   searchCrop(requestId: string, id: number) {
-    this.http.get<any>(`${this.apiURL}/search_similar_crop/${requestId}/${id}`).subscribe({
+    this.http.get<any>(`${this.apiURL}/api/search_similar_crop/${requestId}/${id}`).subscribe({
       next: (res) => {
         if (res.error) {
           console.warn("Crop not found:", id);

@@ -93,7 +93,7 @@ def iou(box1, box2):
 
 
 # Detect objects + save crops
-@app.post("/detect")
+@app.post("/api/detect")
 async def detect(file: UploadFile = File(...)):
     # 🔥 Clean old folders before processing
     cleanup_old_folders(CROPS_DIR, 600)
@@ -172,7 +172,7 @@ async def detect(file: UploadFile = File(...)):
 
 
 # Search similar for a given crop
-@app.get("/search_similar_crop/{request_id}/{crop_id}")
+@app.get("/api/search_similar_crop/{request_id}/{crop_id}")
 async def search_similar_crop(request_id: str, crop_id: int):
     crop_path = os.path.join(CROPS_DIR, request_id, f"crop_{crop_id}.jpg")
     if not os.path.exists(crop_path):
