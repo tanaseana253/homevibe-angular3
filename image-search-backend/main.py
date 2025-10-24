@@ -40,7 +40,7 @@ os.makedirs(CROPS_DIR, exist_ok=True)
 app.mount("/cropped_images", StaticFiles(directory=CROPS_DIR), name="cropped")
 
 # Load YOLO model once
-model = YOLO("yolov8s.pt")
+model = YOLO("yolov8n.pt")
 
 @app.get("/health")
 def health():

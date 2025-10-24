@@ -22,6 +22,11 @@ RUN apt-get update && apt-get install -y build-essential
 COPY image-search-backend/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
+# ✅ Pre-download YOLO weights
+RUN mkdir -p /root/.cache/torch/hub/checkpoints && \
+    curl -L https://github.com/ultralytics/assets/releases/download/v8.3.0/yolov8n.pt \
+    -o /root/.cache/torch/hub/checkpoints/yolov8n.pt
+
 # Copy backend code
 COPY image-search-backend/ /app/image-search-backend/
 
