@@ -33,19 +33,22 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# ---------- STATIC MOUNTS (final placement) ----------
-# 1) Serve cropped images (must be first)
-CROPS_DIR =  os.path.join(os.path.dirname(__file__), "cropped_images")
+# # ---------- STATIC MOUNTS (final placement) ----------
+# # 1) Serve cropped images (must be first)
+# CROPS_DIR =  os.path.join(os.path.dirname(__file__), "cropped_images")
+# os.makedirs(CROPS_DIR, exist_ok=True)
+# app.mount("/cropped_images", StaticFiles(directory=CROPS_DIR), name="cropped")
+
+# # 2) Serve Angular build (must be last)
+# dist_path = os.path.join(os.path.dirname(__file__), "static")
+# app.mount("/", StaticFiles(directory=dist_path, html=True), name="static")
+
+# @app.get("/")
+# def serve_frontend():
+#     return FileResponse(os.path.join(dist_path, "index.html"))
+
+CROPS_DIR = os.path.join(os.path.dirname(__file__), "cropped_images")
 os.makedirs(CROPS_DIR, exist_ok=True)
-app.mount("/cropped_images", StaticFiles(directory=CROPS_DIR), name="cropped")
-
-# 2) Serve Angular build (must be last)
-dist_path = os.path.join(os.path.dirname(__file__), "static")
-app.mount("/", StaticFiles(directory=dist_path, html=True), name="static")
-
-@app.get("/")
-def serve_frontend():
-    return FileResponse(os.path.join(dist_path, "index.html"))
 
 
 # Load YOLO model once
@@ -210,4 +213,16 @@ async def search_similar_crop(request_id: str, crop_id: int):
         })
 
     return {"matches": matches}
+
+# ---------- STATIC MOUNTS (final placement) ----------
+# 1) Serve cropped images (must be first)
+app.mount("/cropped_images", StaticFiles(directory=CROPS_DIR), name="cropped")
+
+# 2) Serve Angular build (must be last)
+dist_path = os.path.join(os.path.dirname(__file__), "static")
+app.mount("/", StaticFiles(directory=dist_path, html=True), name="static")
+
+@app.get("/")
+def serve_frontend():
+    return FileResponse(os.path.join(dist_path, "index.html"))
 
