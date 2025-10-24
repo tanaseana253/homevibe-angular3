@@ -54,7 +54,7 @@ os.makedirs(CROPS_DIR, exist_ok=True)
 # Load YOLO model once
 model = YOLO("yolov8n.pt")
 
-@app.get("/health")
+@app.get("/api/health")
 def health():
     return {"ok": True}
 
