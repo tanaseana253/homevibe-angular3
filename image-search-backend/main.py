@@ -35,7 +35,7 @@ app.add_middleware(
 )
 # ---------- STATIC MOUNTS (final placement) ----------
 # 1) Serve cropped images (must be first)
-CROPS_DIR = "cropped_images"
+CROPS_DIR =  os.path.join(os.path.dirname(__file__), "cropped_images")
 os.makedirs(CROPS_DIR, exist_ok=True)
 app.mount("/cropped_images", StaticFiles(directory=CROPS_DIR), name="cropped")
 
